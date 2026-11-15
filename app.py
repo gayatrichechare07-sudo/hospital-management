@@ -1,11 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hospital.db'
+
+# Always store the database in the project root's instance/ folder
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'instance', 'hospital.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'hospital-secret-key'
+
+# Ensure instance folder exists
+os.makedirs(os.path.join(BASE_DIR, 'instance'), exist_ok=True)
 
 db = SQLAlchemy(app)
 
