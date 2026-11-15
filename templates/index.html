@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — MediCare HMS{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h2>Good day, Admin 👋</h2>
+    <p>Here's what's happening at your hospital today.</p>
+  </div>
+  <a href="{{ url_for('add_appointment') }}" class="btn btn-primary">📅 Book Appointment</a>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card blue">
+    <div class="stat-icon-wrap">👤</div>
+    <div>
+      <div class="stat-number">{{ stats.patients }}</div>
+      <div class="stat-label">Total Patients</div>
+    </div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-icon-wrap">🩺</div>
+    <div>
+      <div class="stat-number">{{ stats.doctors }}</div>
+      <div class="stat-label">Total Doctors</div>
+    </div>
+  </div>
+  <div class="stat-card orange">
+    <div class="stat-icon-wrap">📅</div>
+    <div>
+      <div class="stat-number">{{ stats.appointments }}</div>
+      <div class="stat-label">Active Appointments</div>
+    </div>
+  </div>
+  <div class="stat-card purple">
+    <div class="stat-icon-wrap">🏨</div>
+    <div>
+      <div class="stat-number">{{ stats.wards }}</div>
+      <div class="stat-label">Wards</div>
+    </div>
+  </div>
+</div>
+
+<!-- Today's appointments -->
+<div class="card">
+  <div class="card-header">
+    <h3>📋 Today's Appointments</h3>
+    <a href="{{ url_for('appointments') }}" class="btn btn-secondary btn-sm">View All</a>
+  </div>
+  {% if today_appts %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Time</th><th>Patient</th><th>Doctor</th><th>Reason</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in today_appts %}
+      <tr>
+        <td><strong>{{ a.appt_time }}</strong></td>
+        <td>{{ a.patient.name }}</td>
+        <td>{{ a.doctor.name }}</td>
+        <td>{{ a.reason or '—' }}</td>
+        <td><span class="badge badge-{{ a.status|lower }}">{{ a.status }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    No appointments scheduled for today.
+  </div>
+  {% endif %}
+</div>
+
+<!-- Quick actions -->
+<div>
+  <h3 style="margin-bottom:1rem;font-size:.95rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Quick Actions</h3>
+  <div class="quick-grid">
+    <a href="{{ url_for('add_patient') }}" class="quick-card">
+      <span class="qicon">🆕</span><span>Register Patient</span>
+    </a>
+    <a href="{{ url_for('add_doctor') }}" class="quick-card">
+      <span class="qicon">👨‍⚕️</span><span>Add Doctor</span>
+    </a>
+    <a href="{{ url_for('add_appointment') }}" class="quick-card">
+      <span class="qicon">📋</span><span>Book Appointment</span>
+    </a>
+    <a href="{{ url_for('add_ward') }}" class="quick-card">
+      <span class="qicon">🏨</span><span>Add Ward</span>
+    </a>
+  </div>
+</div>
+
+{% endblock %}

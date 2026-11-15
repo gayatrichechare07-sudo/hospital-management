@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Doctors — MediCare HMS{% endblock %}
+{% block page_title %}Doctors{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Doctors</h2>
+    <p>All registered medical staff</p>
+  </div>
+  <a href="{{ url_for('add_doctor') }}" class="btn btn-primary">➕ Add Doctor</a>
+</div>
+
+<div class="doctors-grid">
+  {% if doctors %}
+    {% for d in doctors %}
+    <div class="doctor-card">
+      <div class="doctor-card-top">
+        <div class="doctor-avatar">{{ d.name[4] if d.name.startswith('Dr. ') else d.name[0] }}</div>
+        <div class="doctor-info">
+          <h3>{{ d.name }}</h3>
+          <p class="spec">{{ d.specialization }}</p>
+        </div>
+      </div>
+      <div class="doctor-meta">
+        <p>📞 {{ d.phone or 'No phone' }}</p>
+        <p>✉️ {{ d.email or 'No email' }}</p>
+      </div>
+      <span class="badge {{ 'badge-available' if d.available else 'badge-unavailable' }}">
+        {{ '✅ Available' if d.available else '❌ Unavailable' }}
+      </span>
+      <div class="doctor-actions">
+        <a href="{{ url_for('edit_doctor', did=d.id) }}" class="btn btn-sm btn-outline">✏️ Edit</a>
+        <form method="post" action="{{ url_for('delete_doctor', did=d.id) }}"
+              onsubmit="return confirm('Delete {{ d.name }}?')">
+          <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state" style="grid-column:1/-1">
+    <div class="empty-icon">🩺</div>
+    No doctors registered. <a href="{{ url_for('add_doctor') }}">Add one now.</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

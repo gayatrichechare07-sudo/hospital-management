@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if doctor else 'Add' }} Doctor — MediCare HMS{% endblock %}
+{% block page_title %}{{ 'Edit Doctor' if doctor else 'Add Doctor' }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>{{ 'Edit Doctor' if doctor else 'Add New Doctor' }}</h2>
+    <p>{{ 'Update doctor information' if doctor else 'Register a new doctor to the system' }}</p>
+  </div>
+  <a href="{{ url_for('doctors') }}" class="btn btn-outline">← Back to Doctors</a>
+</div>
+
+<div class="card form-card">
+  <div class="card-header">
+    <h3>{{ '✏️ Edit Details' if doctor else '👨‍⚕️ Doctor Information' }}</h3>
+  </div>
+  <div class="card-body">
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input type="text" id="name" name="name" required
+                 value="{{ doctor.name if doctor else '' }}" placeholder="e.g. Dr. Priya Sharma">
+        </div>
+        <div class="form-group">
+          <label for="specialization">Specialization *</label>
+          <input type="text" id="specialization" name="specialization" required
+                 value="{{ doctor.specialization if doctor else '' }}" placeholder="e.g. Cardiology">
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone"
+                 value="{{ doctor.phone if doctor else '' }}" placeholder="e.g. 9000000001">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email"
+                 value="{{ doctor.email if doctor else '' }}" placeholder="doctor@hospital.com">
+        </div>
+        <div class="form-group form-full">
+          <label class="checkbox-label">
+            <input type="checkbox" name="available" {{ 'checked' if not doctor or doctor.available }}>
+            Currently Available for Appointments
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          {{ '✅ Update Doctor' if doctor else '✅ Add Doctor' }}
+        </button>
+        <a href="{{ url_for('doctors') }}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

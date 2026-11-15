@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Appointments — MediCare HMS{% endblock %}
+{% block page_title %}Appointments{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Appointments</h2>
+    <p>All scheduled, completed and cancelled appointments</p>
+  </div>
+  <a href="{{ url_for('add_appointment') }}" class="btn btn-primary">📅 Book Appointment</a>
+</div>
+
+<div class="card">
+  {% if appointments %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th><th>Date</th><th>Time</th><th>Patient</th>
+        <th>Doctor</th><th>Reason</th><th>Status</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in appointments %}
+      <tr>
+        <td style="color:var(--muted);font-size:.8rem">#{{ a.id }}</td>
+        <td><strong>{{ a.appt_date.strftime('%d %b %Y') }}</strong></td>
+        <td>{{ a.appt_time }}</td>
+        <td>{{ a.patient.name }}</td>
+        <td style="color:var(--muted)">{{ a.doctor.name }}</td>
+        <td style="color:var(--muted);font-size:.85rem">{{ a.reason or '—' }}</td>
+        <td><span class="badge badge-{{ a.status|lower }}">{{ a.status }}</span></td>
+        <td class="actions">
+          {% if a.status == 'Scheduled' %}
+          <form method="post" action="{{ url_for('update_appointment_status', aid=a.id, status='Completed') }}" style="display:inline">
+            <button type="submit" class="btn btn-sm btn-success">✓ Done</button>
+          </form>
+          <form method="post" action="{{ url_for('update_appointment_status', aid=a.id, status='Cancelled') }}" style="display:inline">
+            <button type="submit" class="btn btn-sm btn-outline">✕ Cancel</button>
+          </form>
+          {% endif %}
+          <form method="post" action="{{ url_for('delete_appointment', aid=a.id) }}" style="display:inline"
+                onsubmit="return confirm('Delete this appointment?')">
+            <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">📅</div>
+    No appointments found. <a href="{{ url_for('add_appointment') }}">Book one now.</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

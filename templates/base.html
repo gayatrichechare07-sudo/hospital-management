@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MediCare HMS{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">🏥</div>
+      <h1>MediCare</h1>
+      <p>Hospital Management</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' }}">
+        <span class="nav-icon">📊</span> <span>Dashboard</span>
+      </a>
+
+      <div class="nav-section-label">Management</div>
+      <a href="{{ url_for('patients') }}" class="{{ 'active' if 'patient' in request.endpoint }}">
+        <span class="nav-icon">👤</span> <span>Patients</span>
+      </a>
+      <a href="{{ url_for('doctors') }}" class="{{ 'active' if 'doctor' in request.endpoint }}">
+        <span class="nav-icon">🩺</span> <span>Doctors</span>
+      </a>
+      <a href="{{ url_for('appointments') }}" class="{{ 'active' if 'appointment' in request.endpoint }}">
+        <span class="nav-icon">📅</span> <span>Appointments</span>
+      </a>
+      <a href="{{ url_for('wards') }}" class="{{ 'active' if 'ward' in request.endpoint }}">
+        <span class="nav-icon">🏨</span> <span>Wards</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">MediCare HMS &copy; 2024</div>
+  </aside>
+
+  <!-- ── Main wrap ────────────────────────────────────────────────── -->
+  <div class="main-wrap">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <span class="topbar-title">{% block page_title %}MediCare HMS{% endblock %}</span>
+      <div class="topbar-right">
+        <div class="topbar-info" style="text-align:right">
+          <strong>Admin</strong>
+          <span>Hospital Admin</span>
+        </div>
+        <div class="topbar-avatar">A</div>
+      </div>
+    </header>
+
+    <!-- Alerts + page content -->
+    <main class="page-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              {% if category == 'success' %}✅{% elif category == 'warning' %}⚠️{% else %}❌{% endif %}
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">MediCare Hospital Management System — Built with Flask &amp; SQLite</footer>
+  </div>
+
+</body>
+</html>

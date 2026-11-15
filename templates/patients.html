@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Patients — MediCare HMS{% endblock %}
+{% block page_title %}Patients{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Patients</h2>
+    <p>Manage all registered patients</p>
+  </div>
+  <a href="{{ url_for('add_patient') }}" class="btn btn-primary">➕ Register Patient</a>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <form class="search-bar" method="get" style="margin:0">
+      <input type="text" name="q" placeholder="🔍  Search by name..." value="{{ search }}">
+      <button type="submit" class="btn btn-secondary">Search</button>
+      {% if search %}<a href="{{ url_for('patients') }}" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+    </form>
+    <span style="font-size:.8rem;color:var(--muted)">{{ patients|length }} record(s)</span>
+  </div>
+
+  {% if patients %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th><th>Name</th><th>Age</th><th>Gender</th>
+        <th>Blood Group</th><th>Phone</th><th>Registered</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in patients %}
+      <tr>
+        <td style="color:var(--muted);font-size:.8rem">#{{ p.id }}</td>
+        <td><strong>{{ p.name }}</strong></td>
+        <td>{{ p.age }} yrs</td>
+        <td>{{ p.gender }}</td>
+        <td>
+          {% if p.blood_group %}
+          <span class="badge badge-scheduled">{{ p.blood_group }}</span>
+          {% else %}—{% endif %}
+        </td>
+        <td>{{ p.phone or '—' }}</td>
+        <td style="color:var(--muted);font-size:.8rem">{{ p.created_at.strftime('%d %b %Y') }}</td>
+        <td class="actions">
+          <a href="{{ url_for('edit_patient', pid=p.id) }}" class="btn btn-sm btn-outline">✏️ Edit</a>
+          <form method="post" action="{{ url_for('delete_patient', pid=p.id) }}" style="display:inline"
+                onsubmit="return confirm('Delete {{ p.name }}?')">
+            <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">👤</div>
+    No patients found. <a href="{{ url_for('add_patient') }}">Register the first one.</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

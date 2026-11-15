@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Wards — MediCare HMS{% endblock %}
+{% block page_title %}Wards{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Wards</h2>
+    <p>Hospital ward and bed occupancy overview</p>
+  </div>
+  <a href="{{ url_for('add_ward') }}" class="btn btn-primary">➕ Add Ward</a>
+</div>
+
+<div class="wards-grid">
+  {% if wards %}
+    {% for w in wards %}
+    {% set pct = ((w.occupied / w.capacity) * 100) | int if w.capacity > 0 else 0 %}
+    <div class="ward-card">
+      <div class="ward-header">
+        <h3>{{ w.name }}</h3>
+        <span class="badge {{ 'badge-danger' if pct >= 90 else ('badge-warning' if pct >= 70 else 'badge-available') }}">
+          {{ pct }}% Full
+        </span>
+      </div>
+      <p class="ward-type">🏷️ {{ w.ward_type or 'General' }}</p>
+      <div class="ward-stat">
+        <span>Beds occupied</span>
+        <strong>{{ w.occupied }} / {{ w.capacity }}</strong>
+      </div>
+      <div class="ward-progress">
+        <div class="progress-bar">
+          <div class="progress-fill {{ 'danger' if pct >= 90 else ('warning' if pct >= 70 else '') }}"
+               style="width: {{ pct }}%"></div>
+        </div>
+      </div>
+      <div class="ward-actions">
+        <a href="{{ url_for('edit_ward', wid=w.id) }}" class="btn btn-sm btn-outline">✏️ Edit</a>
+        <form method="post" action="{{ url_for('delete_ward', wid=w.id) }}"
+              onsubmit="return confirm('Delete ward {{ w.name }}?')">
+          <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state" style="grid-column:1/-1">
+    <div class="empty-icon">🏨</div>
+    No wards configured. <a href="{{ url_for('add_ward') }}">Add one now.</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

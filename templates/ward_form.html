@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if ward else 'Add' }} Ward — MediCare HMS{% endblock %}
+{% block page_title %}{{ 'Edit Ward' if ward else 'Add Ward' }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>{{ 'Edit Ward' if ward else 'Add New Ward' }}</h2>
+    <p>{{ 'Update ward details' if ward else 'Create a new hospital ward' }}</p>
+  </div>
+  <a href="{{ url_for('wards') }}" class="btn btn-outline">← Back to Wards</a>
+</div>
+
+<div class="card form-card">
+  <div class="card-header">
+    <h3>{{ '✏️ Edit Ward' if ward else '🏨 Ward Information' }}</h3>
+  </div>
+  <div class="card-body">
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Ward Name *</label>
+          <input type="text" id="name" name="name" required
+                 value="{{ ward.name if ward else '' }}" placeholder="e.g. General Ward A">
+        </div>
+        <div class="form-group">
+          <label for="ward_type">Ward Type</label>
+          <select id="ward_type" name="ward_type">
+            {% for t in ['General', 'Intensive Care', 'Pediatric', 'Maternity', 'Surgical', 'Emergency', 'Oncology'] %}
+            <option value="{{ t }}" {{ 'selected' if ward and ward.ward_type == t }}>{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="capacity">Total Beds *</label>
+          <input type="number" id="capacity" name="capacity" required min="1"
+                 value="{{ ward.capacity if ward else '' }}">
+        </div>
+        <div class="form-group">
+          <label for="occupied">Currently Occupied</label>
+          <input type="number" id="occupied" name="occupied" min="0"
+                 value="{{ ward.occupied if ward else 0 }}">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          {{ '✅ Update Ward' if ward else '✅ Add Ward' }}
+        </button>
+        <a href="{{ url_for('wards') }}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
